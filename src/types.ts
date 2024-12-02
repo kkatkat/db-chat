@@ -25,4 +25,5 @@ export type ChatRequest = {
     dbName: string;
     tablesDescription: DbTable[] | string;
     model?: string;
+    ollamaApiUrl?: string;
 }

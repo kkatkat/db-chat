@@ -4,13 +4,13 @@ import mysql from 'mysql2/promise';
 import axios, { AxiosResponse } from 'axios';
 import { ChatRequest, OllamaResponse } from './types.js';
 
-const LLAMA_API_URL = "http://localhost:11434/api/generate";
+const DEFAULT_OLLAMA_API_URL = "http://localhost:11434/api/generate";
 
 const app = express();
 app.use(bodyParser.json());
 
-async function promptOllama(prompt: string, model: string = 'llama3.1:8b'): Promise<OllamaResponse> {
-  const response: AxiosResponse<OllamaResponse> = await axios.post(LLAMA_API_URL, {
+async function promptOllama(prompt: string, model: string = 'llama3.1:8b', ollamaApiUrl: string = DEFAULT_OLLAMA_API_URL): Promise<OllamaResponse> {
+  const response: AxiosResponse<OllamaResponse> = await axios.post(ollamaApiUrl, {
     model: model,
     prompt: prompt,
     stream: false,
@@ -22,8 +22,6 @@ async function promptOllama(prompt: string, model: string = 'llama3.1:8b'): Prom
 app.post('/ask', async (req, res) => {
     const body: ChatRequest = req.body;
 
-    console.log(JSON.stringify(body.tablesDescription))
-
     try {
         const initialPrompt = `
             Generate a syntactically correct SQL query for the following question. Write no explanations, just the query as PLAIN TEXT (no markdown) and nothing else:
@@ -32,7 +30,7 @@ app.post('/ask', async (req, res) => {
             SQL query:
         `
 
-        const { response: sqlQuery } = await promptOllama(initialPrompt);
+        const { response: sqlQuery } = await promptOllama(initialPrompt, body.model, body.ollamaApiUrl);
         console.log('Generated SQL query:', sqlQuery);
 
         const db = await mysql.createConnection({
