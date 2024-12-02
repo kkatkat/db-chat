@@ -37,7 +37,12 @@ Request body (JSON):
 ```json
 {
     "answer": "There are 3 employees in the 'Shoes' department.",
-    "sql": "SELECT COUNT(id) FROM employees WHERE department = 'Shoes';"
+    "sql": "SELECT COUNT(id) FROM employees WHERE department = 'Shoes'",
+    "rawResult": [
+        {
+            "COUNT(id)": 3
+        }
+    ]
 }
 ```
 

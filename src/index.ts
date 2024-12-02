@@ -60,7 +60,11 @@ app.post('/ask', async (req, res) => {
 
         const { response: answer } = await promptOllama(resultPrompt);
 
-        res.json({ answer, sql: sqlQuery });
+        res.json({ 
+            answer, 
+            sql: sqlQuery,
+            rawResult: rows
+         });
 
     } catch (error) {
         res.status(500).json({ error: error });
